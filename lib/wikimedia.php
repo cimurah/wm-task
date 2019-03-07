@@ -37,18 +37,24 @@ class Wikimedia{
                 $article_names[] = $article->title;
             }
             $articleTitles = implode("|", $article_names);
-            $articles_result = self::extractArticlesContent($articleTitles);
+            $articles_result = self::extractContentByArticlesTitle($articleTitles); //Get all category articles with extracted information
             $articles_extract = isset($articles_result->query->pages) ? $articles_result->query->pages : [];
             foreach ($articles_extract as $extract) {
-                $articles_readability[self::getContentReadability("test")] = $extract->title;
+                //@TODO get value from $extract that we want to rate and pass it to self::getContentReadability method
+                $articles_readability[self::getContentReadability("Pass content to rate")] = $extract->title; //Get articles extracted information readability
             }
-            ksort($articles_readability);
+            ksort($articles_readability); //Sort articles by readability key
         }
     
         return $articles_readability;
     }
     
-    public static function extractArticlesContent($articleTitles){
+    /***
+     * @TODO: clean up this method.  Need to determine what content to pull for readibility rating
+     * It currently just pulls the first 5 sentences of each article 
+     * @params: it takes an array of article titles that need to be queried
+     */
+    public static function extractContentByArticlesTitle($articleTitles){
         $params = [
             "action" => "query",
             "prop" => "extracts",
@@ -75,15 +81,16 @@ class Wikimedia{
     /**
      * @TODO  Apply readability using andresrey library
      * https://github.com/andreskrey/readability.php
+     * It currently just returns a random number between 1 - 500
+     * @param: String that needs to be rated for readability
      */
     public static function getContentReadability($content){
-        //$test_text ="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
         //$readability = new Readability(new Configuration());
-        //$readability->parse($test_text);
+        //$readability->parse($content);
         return mt_rand(1, 500);
     }
     
-    public static function paramsToString($params){
+    private static function paramsToString($params){
         $params_string = '';
         foreach($params as $key=>$value){
             $params_string .= $key.'='.$value.'&';
