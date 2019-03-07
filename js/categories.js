@@ -1,3 +1,4 @@
+// If category name is submitted then make ajax request to get list of articles
 function getArticles(){
     var url = document.getElementById('categoryForm').getAttribute("action");
     var categoryInput = document.getElementById("category").value;
@@ -14,27 +15,24 @@ function getArticles(){
     })
     .then((response) => response.json())
     .then( function(data){
-        var articles_html = "<ul>";
+        var articlesHtml = "<ul>";
         if(data.error){
-            articles_html += `<li>${data.error}</li>`;
+            articlesHtml += `<li>${data.error}</li>`;
         }
         else{
-            console.log(data);
             var articles = data.articles;
             
             if(Object.keys(articles).length){
                 Object.keys(articles).forEach(key => {
-                    let value = articles[key];
-                    articles_html += `<li>${key} - ${value}</li>`; 
+                    articlesHtml += `<li>${key} - ${articles[key]}</li>`; 
                 });
-
             }
             else{
-                articles_html += "<li>No Results</li>"
+                articlesHtml += "<li>No Results</li>"
             }
         }
-        articles_html += "</ul>";
-        document.getElementById("articlesList").innerHTML = articles_html;
+        articlesHtml += "</ul>";
+        document.getElementById("articlesList").innerHTML = articlesHtml;
     })
     .catch((error) => { alert(`There was an error ${error}`); console.log(error);})
 }
